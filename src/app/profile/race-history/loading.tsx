@@ -5,10 +5,5 @@ export const metadata = {
 };
 
 export default function Loading() {
-  return (
-    <h1 className="text-center">
-      Loading History...
-      <span className="loading loading-spinner loading-lg"></span>
-    </h1>
-  );
+  return <h1 className="text-center">Loading History...</h1>;
 }

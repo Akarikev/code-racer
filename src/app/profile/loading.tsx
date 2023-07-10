@@ -7,7 +7,7 @@ export const metadata = {
 export default function Loading() {
   return (
     <h1 className="text-center">
-      <span className="loading loading-spinner loading-lg"></span>
+Loading...
     </h1>
   );
 }
