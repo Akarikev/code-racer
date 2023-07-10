@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import React, { useState } from "react";
+import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,10 +9,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Icons } from "@/components/icons";
 import { SessionProvider, signOut, useSession } from "next-auth/react";
-import { LoginButton } from "./ui/buttons";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 import { ModeToggle } from "./mode-toggle";
+import { LoginButton } from "./ui/buttons";
+import Spinner from "./ui/spinner";
 
 const AccountMenu = () => {
   const session = useSession();
@@ -34,20 +35,22 @@ const AccountMenu = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <Link href="/dashboard" className="flex gap-1 items-center">
             <Icons.settings className="mr-2 h-4 w-4" />
             <span>Dashboard</span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <Link href="/profile" className="flex gap-1 items-center">
             <Icons.settings className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut()}>
+        <DropdownMenuItem
+          onClick={() => signOut({ callbackUrl: `${window.location.origin}` })}
+        >
           <Icons.logout className="mr-2 h-4 w-4" />
           <span>Logout</span>
         </DropdownMenuItem>
@@ -61,8 +64,8 @@ const Header = () => {
 
   const navigation = [
     { title: "Race", path: "/race" },
-    { title: "Leaderboard", path: "/" },
-    // { title: "About", path: "/about" },
+    { title: "Leaderboard", path: "/leaderboard" },
+    // { title: "About", path: "/" },
   ];
 
   const session = useSession();
@@ -135,13 +138,11 @@ const Header = () => {
             </ul>
           </div>
           <div className="hidden md:flex gap-4 items-center">
-            {session.status !== "authenticated" ? (
-              <LoginButton />
-            ) : (
-              <>
-                <AccountMenu />
-              </>
-            )}
+            <div className="flex w-36 justify-center">
+              {session.status === "loading" && <Spinner />}
+              {session.status === "unauthenticated" && <LoginButton />}
+              {session.status === "authenticated" && <AccountMenu />}
+            </div>
             <ModeToggle />
           </div>
         </div>
